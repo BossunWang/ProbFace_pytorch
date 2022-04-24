@@ -1,4 +1,4 @@
-from model import backbone
+from model import backbone, uncertainty_head
 import torch
 import os
 import numpy as np
@@ -30,16 +30,24 @@ def to_input(pil_rgb_image):
 
 if __name__ == '__main__':
     import time
+
+    batch_size = 2
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = load_pretrained_model('ir_101')
     model = model.to(device)
-    model.train()
+    model.eval()
 
     with torch.no_grad():
         start = time.time()
-        feature, feature_fusion = model(torch.randn(2, 3, 112, 112).to(device))
+        feature, feature_fusion, norm = model(torch.randn(batch_size, 3, 112, 112).to(device))
         end = time.time()
         print("fw time: ", end - start)
         print("feature:", feature.size())
         print("feature_fusion:", feature_fusion.size())
 
+    unh = uncertainty_head.UncertaintyHead(in_feat=feature_fusion.size(-1)).to(device)
+    unh.train()
+
+    log_sigma_sq = unh(feature_fusion)
+    print("log_sigma_sq:", log_sigma_sq)
