@@ -93,12 +93,11 @@ class TripletSemiHardLoss(nn.Module):
 
         # In lifted-struct, the authors multiply 0.5 for upper triangular
         #   in semihard, they take all positive pairs except the diagonal.
-        num_positives = torch.sum(mask_positives)
+        num_positives = torch.sum(mask_positives).clamp(min=1.0)
 
-        # nan if num_positives is zero
-        # triplet_loss = torch.div(torch.sum(torch.mul(loss_mat, mask_positives).clamp(min=0.0)), num_positives)
+        triplet_loss = torch.div(torch.sum(torch.mul(loss_mat, mask_positives).clamp(min=0.0)), num_positives)
 
-        triplet_loss = torch.sum(torch.mul(loss_mat, mask_positives).clamp(min=0.0))
+        # triplet_loss = torch.sum(torch.mul(loss_mat, mask_positives).clamp(min=0.0))
         return triplet_loss
 
 
@@ -124,12 +123,12 @@ if __name__ == '__main__':
     feat_fusion = torch.randn(batch_size, in_feat).to(device)
     log_sigma_sq = unh(feat_fusion)
 
-    label = torch.randint(0, 3, (batch_size,)).to(device)
-    # label = torch.Tensor([2, 1, 0]).to(device)
+    # label = torch.randint(0, 3, (batch_size,)).to(device)
+    label = torch.Tensor([2, 1, 0]).to(device)
     print("label:", label)
     _, attention_mat = MLS(feat.detach(), log_sigma_sq, label)
     print("attention_mat:", attention_mat)
 
     triplet_loss = TripletSemiHard(attention_mat, label, margin=3.0)
-    print(triplet_loss)
+    print("triplet_loss", triplet_loss)
     triplet_loss.backward()
