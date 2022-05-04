@@ -13,19 +13,51 @@ from torch.utils.data import Dataset, sampler
 from torchvision import transforms
 from PIL import Image
 import pickle
-from tqdm import tqdm
+import dlib
+import sys
+
+abs_path = os.getcwd().split('ProbFace_pytorch')[0]
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch', "face_mask_adding/FMA-3D/"))
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch', "face_mask_adding/FMA-3D/utils"))
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch', "face_mask_adding/FMA-3D/models"))
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch', "face_mask_adding/FMA-3D/utils/cpython"))
+from face_masker import FaceMasker
 
 
 class ImageDataset(Dataset):
     def __init__(self, data_root, data_list_path
                  , img_size=112, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]
-                 , sample_size=1, data_aug=False):
+                 , sample_size=1, data_aug=False, masked_ratio=0.5):
         self.data_root = data_root
         self.img_size = img_size
         self.mean = mean
         self.std = std
         self.sample_size = sample_size
         self.data_aug = data_aug
+
+        self.detector = dlib.get_frontal_face_detector()
+        dlib_model_path = os.path.join(abs_path, 'ProbFace_pytorch'
+                                       , "face_mask_adding/FMA-3D/shape_predictor_68_face_landmarks.dat")
+        self.predictor = dlib.shape_predictor(dlib_model_path)
+        is_aug = True
+        self.mask_offset_list = [0, 100, 135]
+        self.mask_template_number = 18
+        prnet_model_path = os.path.join(abs_path, 'ProbFace_pytorch'
+                                        , "face_mask_adding/FMA-3D/models/prnet.pth")
+        index_path = os.path.join(abs_path, 'ProbFace_pytorch'
+                                  , 'face_mask_adding/FMA-3D/Data/uv-data/face_ind.txt')
+        triangles_path = os.path.join(abs_path, 'ProbFace_pytorch'
+                                      , 'face_mask_adding/FMA-3D/Data/uv-data/triangles.txt')
+        uv_face_path = os.path.join(abs_path, 'ProbFace_pytorch'
+                                    , 'face_mask_adding/FMA-3D/Data/uv-data/uv_face_mask.png')
+        mask_template_folder = os.path.join(abs_path, 'ProbFace_pytorch'
+                                            , 'face_mask_adding/FMA-3D/Data/mask-data')
+        self.face_masker_list \
+            = [FaceMasker(is_aug, mask_offset
+                          , prnet_model_path, index_path, triangles_path, uv_face_path, mask_template_folder)
+               for mask_offset in self.mask_offset_list]
+
+        self.masked_ratio = masked_ratio
 
         if os.path.isfile(data_list_path):
             with open(data_list_path, 'rb') as f:
@@ -65,8 +97,23 @@ class ImageDataset(Dataset):
     def __len__(self):
         return len(self.train_list)
 
-    def to_Tensor(self, image_path):
-        image = Image.open(image_path).convert('RGB')
+    def shape_to_np(self, shape, dtype="int"):
+        # initialize the list of (x, y)-coordinates
+        coords = np.zeros((68, 2), dtype=dtype)
+        # loop over the 68 facial landmarks and convert them
+        # to a 2-tuple of (x, y)-coordinates
+        for i in range(0, 68):
+            coords[i] = (shape.part(i).x, shape.part(i).y)
+        # return the list of (x, y)-coordinates
+        return coords
+
+    def to_Tensor(self, image_path, face_masker=None, landmarks=None, template_name=None):
+        img = cv2.imread(image_path)
+
+        if face_masker is not None:
+            img = face_masker.add_mask_from_img(img.copy(), landmarks, template_name, is_68_landmarks=True)
+
+        image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         image_transform = self.transform(image)
         if self.data_aug:
             blur_image_transform = self.blur_transform(image)
@@ -99,12 +146,27 @@ class ImageDataset(Dataset):
 
         for image_path in file_list:
             image_path = os.path.join(self.data_root, cur_id, image_path)
+
+            img = dlib.load_rgb_image(image_path)
+            dets = self.detector(img, 1)
+            face_masker = None
+            landmarks = None
+            template_name = None
+            if len(dets) == 1 and random.random() > (1.0 - self.masked_ratio):
+                tmp_idx = np.random.randint(self.mask_template_number, size=1)[0]
+                mask_offset_index = np.random.randint(len(self.mask_offset_list), size=1)[0]
+                template_name = str(tmp_idx) + '.png'
+                face_masker = self.face_masker_list[mask_offset_index]
+
+                shape = self.predictor(img, dets[0])
+                landmarks = self.shape_to_np(shape, dtype='float')
+
             if self.data_aug:
-                image, image_blur = self.to_Tensor(image_path)
+                image, image_blur = self.to_Tensor(image_path, face_masker, landmarks, template_name)
                 image_list.append(image)
                 image_list.append(image_blur)
             else:
-                image = self.to_Tensor(image_path)
+                image = self.to_Tensor(image_path, face_masker, landmarks, template_name)
                 image_list.append(image)
 
         image_list = torch.stack(image_list)
@@ -126,7 +188,7 @@ if __name__ == '__main__':
     batch_size = 8
 
     id_loader = DataLoader(
-        ImageDataset(data_root, data_list_path, sample_size=16, data_aug=False),
+        ImageDataset(data_root, data_list_path, sample_size=16, data_aug=False, masked_ratio=0.0),
         batch_size, shuffle=True, num_workers=0, drop_last=True)
 
     batch_iter = iter(id_loader)
@@ -139,4 +201,3 @@ if __name__ == '__main__':
         print(labels.size())
         print("data_time:", time.time() - data_time)
         plt.imsave('sample_images{}.png'.format(batch_idx), (sample.cpu().numpy().transpose(1, 2, 0) + 1) / 2)
-

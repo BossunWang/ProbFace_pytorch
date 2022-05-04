@@ -78,6 +78,13 @@ def init_seeds(seed=0):
     init_torch_seeds(seed)
 
 
+def decay_lr(optimizer, scale=0.1):
+    """Get the current learning rate from optimizer.
+    """
+    for param_group in optimizer.param_groups:
+        param_group['lr'] *= scale
+
+
 def get_lr(optimizer):
     """Get the current learning rate from optimizer. 
     """
@@ -124,7 +131,9 @@ def train_one_epoch(data_loader
                     , args, device):
     """Tain one epoch by traditional training.
     """
+
     for batch_idx, (images, labels) in enumerate(data_loader):
+        global_batch_idx = cur_epoch * len(data_loader) + batch_idx
         images = images.to(device)
         labels = labels.to(device)
         batch_size, sample_size, ch, h, w = images.size()
@@ -145,9 +154,14 @@ def train_one_epoch(data_loader
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        if global_batch_idx in args.milestones:
+            decay_lr(optimizer)
+
         loss_meter.update(loss.item(), batch_sample_size)
         MLS_loss_meter.update(MLS_loss.item(), batch_sample_size)
         triplet_semihard_loss_meter.update(triplet_loss.item(), batch_sample_size)
+
         if args.local_rank in [-1, 0] and batch_idx % args.print_freq == 0:
             loss_avg = loss_meter.avg
             MLS_loss_avg = MLS_loss_meter.avg
@@ -156,7 +170,6 @@ def train_one_epoch(data_loader
             logger.info('Epoch %d, iter %d/%d, lr %f, MLS loss %f, triplet loss %f, loss %f' %
                         (cur_epoch, batch_idx, len(data_loader), lr
                          , MLS_loss_avg, triplet_semihard_loss_avg, loss_avg))
-            global_batch_idx = cur_epoch * len(data_loader) + batch_idx
             args.writer.add_scalar('Train_loss', loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_MLS_loss', MLS_loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_triplet_semihard_loss', triplet_semihard_loss_avg, global_batch_idx)
@@ -168,7 +181,8 @@ def train_one_epoch(data_loader
             state = {
                 'state_dict': head.module.state_dict(),
                 'epoch': cur_epoch,
-                'batch_id': batch_idx
+                'batch_id': batch_idx,
+                'optimizer': optimizer.state_dict()
             }
             torch.save(state, os.path.join(args.out_dir, saved_name))
             logger.info('Save checkpoint %s to disk.' % saved_name)
@@ -176,7 +190,9 @@ def train_one_epoch(data_loader
     if args.local_rank in [-1, 0]:
         saved_name = 'Epoch_%d.pt' % cur_epoch
         state = {'state_dict': head.module.state_dict(),
-                 'epoch': cur_epoch, 'batch_id': batch_idx}
+                 'epoch': cur_epoch,
+                 'batch_id': batch_idx,
+                 'optimizer': optimizer.state_dict()}
         torch.save(state, os.path.join(args.out_dir, saved_name))
         logger.info('Save checkpoint %s to disk...' % saved_name)
 
@@ -210,7 +226,8 @@ def train(args):
         trainset = ImageDataset(args.data_root
                                 , args.train_file
                                 , sample_size=args.sample_size
-                                , data_aug=args.data_aug)
+                                , data_aug=args.data_aug
+                                , masked_ratio=args.masked_ratio)
     train_sampler = torch.utils.data.distributed.DistributedSampler(trainset) if args.local_rank != -1 else None
     train_loader = DataLoader(dataset=trainset,
                               batch_size=args.batch_size,
@@ -241,10 +258,14 @@ def train(args):
     ori_epoch = 0
     parameters = [p for p in unh.parameters() if p.requires_grad]
     optimizer = optim.SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=1e-4)
-    lr_schedule = optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.milestones, gamma=0.1)
     loss_meter = AverageMeter()
     MLS_loss_meter = AverageMeter()
     triplet_semihard_loss_meter = AverageMeter()
+
+    if args.resume:
+        if 'optimizer' in ckpt:
+            optimizer.load_state_dict(ckpt['optimizer'])
+        ori_epoch = ckpt['epoch']
 
     # DP mode
     if cuda and args.local_rank == -1 and torch.cuda.device_count() > 1:
@@ -266,7 +287,6 @@ def train(args):
                         , epoch
                         , loss_meter, MLS_loss_meter, triplet_semihard_loss_meter
                         , args, device)
-        lr_schedule.step()
 
     if args.local_rank != -1:
         dist.destroy_process_group()
@@ -303,6 +323,7 @@ if __name__ == '__main__':
     conf.add_argument('--momentum', type=float, default=0.9,
                       help='The momentum for sgd.')
     conf.add_argument('--triplet_margin', type=float, default=3.0)
+    conf.add_argument('--masked_ratio', type=float, default=0.5)
     conf.add_argument('--log_dir', type=str, default='log',
                       help='The directory to save log.log')
     conf.add_argument('--tensorboardx_logdir', type=str,

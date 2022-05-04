@@ -9,14 +9,15 @@ python3 -m torch.distributed.launch --nproc_per_node=1 --nnodes=1 --node_rank=0 
 --backbone_type "ir_101" \
 --out_dir "prob_face_ir_101" \
 --device "1" \
---epoches 20 \
---step "10,13,16" \
---print_freq 10000  \
---save_freq 100000 \
+--epoches 1 \
+--step "32000,48000" \
+--print_freq 1000  \
+--save_freq 10000 \
 --batch_size 16 \
 --sample_size 16 \
 --momentum 0.9 \
 --triplet_margin 3.0 \
+--masked_ratio 0.0 \
 --sync_bn \
 --log_dir "log_prob_face" \
 --tensorboardx_logdir "log_prob_face/prob_face_ir_101" \
