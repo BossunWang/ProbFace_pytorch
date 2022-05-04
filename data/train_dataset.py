@@ -40,7 +40,7 @@ class ImageDataset(Dataset):
                                        , "face_mask_adding/FMA-3D/shape_predictor_68_face_landmarks.dat")
         self.predictor = dlib.shape_predictor(dlib_model_path)
         is_aug = True
-        self.mask_offset_list = [0, 100, 135]
+        self.mask_offset_list = [0, 100]
         self.mask_template_number = 18
         prnet_model_path = os.path.join(abs_path, 'ProbFace_pytorch'
                                         , "face_mask_adding/FMA-3D/models/prnet.pth")
@@ -188,7 +188,7 @@ if __name__ == '__main__':
     batch_size = 8
 
     id_loader = DataLoader(
-        ImageDataset(data_root, data_list_path, sample_size=16, data_aug=False, masked_ratio=0.0),
+        ImageDataset(data_root, data_list_path, sample_size=16, data_aug=False, masked_ratio=1.0),
         batch_size, shuffle=True, num_workers=0, drop_last=True)
 
     batch_iter = iter(id_loader)
