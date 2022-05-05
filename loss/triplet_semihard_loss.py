@@ -123,10 +123,10 @@ if __name__ == '__main__':
     feat_fusion = torch.randn(batch_size, in_feat).to(device)
     log_sigma_sq = unh(feat_fusion)
 
-    # label = torch.randint(0, 3, (batch_size,)).to(device)
-    label = torch.Tensor([2, 1, 0]).to(device)
+    label = torch.randint(0, 3, (batch_size,)).to(device)
+    # label = torch.Tensor([2, 1, 0]).to(device)
     print("label:", label)
-    _, attention_mat = MLS(feat.detach(), log_sigma_sq, label)
+    _, attention_mat, mean_pos, mean_neg = MLS(feat.detach(), log_sigma_sq, label)
     print("attention_mat:", attention_mat)
 
     triplet_loss = TripletSemiHard(attention_mat, label, margin=3.0)

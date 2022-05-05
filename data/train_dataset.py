@@ -147,19 +147,21 @@ class ImageDataset(Dataset):
         for image_path in file_list:
             image_path = os.path.join(self.data_root, cur_id, image_path)
 
-            img = dlib.load_rgb_image(image_path)
-            dets = self.detector(img, 1)
             face_masker = None
             landmarks = None
             template_name = None
-            if len(dets) == 1 and random.random() > (1.0 - self.masked_ratio):
-                tmp_idx = np.random.randint(self.mask_template_number, size=1)[0]
-                mask_offset_index = np.random.randint(len(self.mask_offset_list), size=1)[0]
-                template_name = str(tmp_idx) + '.png'
-                face_masker = self.face_masker_list[mask_offset_index]
 
-                shape = self.predictor(img, dets[0])
-                landmarks = self.shape_to_np(shape, dtype='float')
+            if self.masked_ratio > 0.:
+                img = dlib.load_rgb_image(image_path)
+                dets = self.detector(img, 1)
+                if len(dets) == 1 and random.random() > (1.0 - self.masked_ratio):
+                    tmp_idx = np.random.randint(self.mask_template_number, size=1)[0]
+                    mask_offset_index = np.random.randint(len(self.mask_offset_list), size=1)[0]
+                    template_name = str(tmp_idx) + '.png'
+                    face_masker = self.face_masker_list[mask_offset_index]
+
+                    shape = self.predictor(img, dets[0])
+                    landmarks = self.shape_to_np(shape, dtype='float')
 
             if self.data_aug:
                 image, image_blur = self.to_Tensor(image_path, face_masker, landmarks, template_name)

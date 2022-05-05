@@ -11,12 +11,13 @@ import numpy as np
 from contextlib import contextmanager
 
 import torch
-import torch.distributed as dist  
+import torch.distributed as dist
 import torch.utils.data.distributed
 from torch import optim
 from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
 from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.multiprocessing import set_start_method
 from tensorboardX import SummaryWriter
 
 from data.train_dataset import ImageDataset
@@ -24,11 +25,9 @@ from model import backbone, uncertainty_head
 from loss import MLSloss, triplet_semihard_loss
 from utils.AverageMeter import AverageMeter
 
-
-logger.basicConfig(level=logger.INFO, 
+logger.basicConfig(level=logger.INFO,
                    format='%(levelname)s %(asctime)s %(filename)s: %(lineno)d] %(message)s',
                    datefmt='%Y-%m-%d %H:%M:%S')
-
 
 adaface_models = {
     'ir_50': "pretrained/adaface_ir50_webface4m.ckpt",
@@ -127,7 +126,7 @@ def train_one_epoch(data_loader
                     , model, head
                     , optimizer, MLS, TripletSemiHard
                     , cur_epoch
-                    , loss_meter, MLS_loss_meter, triplet_semihard_loss_meter
+                    , loss_meter, MLS_loss_meter, triplet_semihard_loss_meter, output_constraint_loss_meter
                     , args, device):
     """Tain one epoch by traditional training.
     """
@@ -147,9 +146,18 @@ def train_one_epoch(data_loader
 
         log_sigma_sq = head(feature_fusions)
 
-        MLS_loss, attention_mat = MLS(features.detach(), log_sigma_sq, labels)
+        MLS_loss, attention_mat, mean_pos, mean_neg = MLS(features.detach(), log_sigma_sq, labels)
         triplet_loss = TripletSemiHard(attention_mat, labels, margin=args.triplet_margin)
-        loss = MLS_loss + triplet_loss
+        sigma_sq = torch.exp(log_sigma_sq)
+        sigma_sq_m = sigma_sq.mean().detach()
+        output_constraint_loss = ((sigma_sq / sigma_sq_m - 1.) ** 2.).mean()
+
+        sigma_sq_max = torch.max(sigma_sq)
+        sigma_sq_min = torch.min(sigma_sq)
+
+        loss = args.mls_loss_weight * MLS_loss \
+               + args.discriminate_loss_weight * triplet_loss \
+               + args.output_constraint_loss_weight * output_constraint_loss
 
         optimizer.zero_grad()
         loss.backward()
@@ -161,19 +169,28 @@ def train_one_epoch(data_loader
         loss_meter.update(loss.item(), batch_sample_size)
         MLS_loss_meter.update(MLS_loss.item(), batch_sample_size)
         triplet_semihard_loss_meter.update(triplet_loss.item(), batch_sample_size)
+        output_constraint_loss_meter.update(output_constraint_loss, batch_sample_size)
 
         if args.local_rank in [-1, 0] and batch_idx % args.print_freq == 0:
-            loss_avg = loss_meter.avg
             MLS_loss_avg = MLS_loss_meter.avg
             triplet_semihard_loss_avg = triplet_semihard_loss_meter.avg
+            output_constraint_loss_avg = output_constraint_loss_meter.avg
+            loss_avg = loss_meter.avg
             lr = get_lr(optimizer)
-            logger.info('Epoch %d, iter %d/%d, lr %f, MLS loss %f, triplet loss %f, loss %f' %
+            logger.info('Epoch %d, iter %d/%d, lr %f, MLS loss %.4f, triplet loss %.4f, constraint_loss %.4f, loss %.4f'
+                        ', mean_pos %.4f, mean_neg %.4f, sigma_sq_max %.4f, sigma_sq_min %.4f' %
                         (cur_epoch, batch_idx, len(data_loader), lr
-                         , MLS_loss_avg, triplet_semihard_loss_avg, loss_avg))
+                         , MLS_loss_avg, triplet_semihard_loss_avg, output_constraint_loss_avg, loss_avg
+                         , mean_pos, mean_neg, sigma_sq_max, sigma_sq_min))
             args.writer.add_scalar('Train_loss', loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_MLS_loss', MLS_loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_triplet_semihard_loss', triplet_semihard_loss_avg, global_batch_idx)
+            args.writer.add_scalar('Train_output_constraint_loss', output_constraint_loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_lr', lr, global_batch_idx)
+
+            MLS_loss_meter.reset()
+            triplet_semihard_loss_meter.reset()
+            output_constraint_loss_meter.reset()
             loss_meter.reset()
 
         if args.local_rank in [-1, 0] and (batch_idx + 1) % args.save_freq == 0:
@@ -256,11 +273,11 @@ def train(args):
     MLS = MLSloss.MLSLoss()
     TripletSemiHard = triplet_semihard_loss.TripletSemiHardLoss()
     ori_epoch = 0
-    parameters = [p for p in unh.parameters() if p.requires_grad]
-    optimizer = optim.SGD(parameters, lr=args.lr, momentum=args.momentum, weight_decay=1e-4)
+    optimizer = optim.SGD(unh.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=1e-4)
     loss_meter = AverageMeter()
     MLS_loss_meter = AverageMeter()
     triplet_semihard_loss_meter = AverageMeter()
+    output_constraint_loss_meter = AverageMeter()
 
     if args.resume:
         if 'optimizer' in ckpt:
@@ -285,7 +302,7 @@ def train(args):
                         , model, unh
                         , optimizer, MLS, TripletSemiHard
                         , epoch
-                        , loss_meter, MLS_loss_meter, triplet_semihard_loss_meter
+                        , loss_meter, MLS_loss_meter, triplet_semihard_loss_meter, output_constraint_loss_meter
                         , args, device)
 
     if args.local_rank != -1:
@@ -302,9 +319,9 @@ if __name__ == '__main__':
     conf.add_argument("--backbone_type", type=str,
                       help="Mobilefacenets, Resnet.")
     conf.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
-    conf.add_argument('--lr', type = float, default=0.1,
+    conf.add_argument('--lr', type=float, default=0.1,
                       help='The initial learning rate.')
-    conf.add_argument("--out_dir", type = str,
+    conf.add_argument("--out_dir", type=str,
                       help="The folder to save models.")
     conf.add_argument('--epoches', type=int, default=9,
                       help='The training epoches.')
@@ -324,6 +341,9 @@ if __name__ == '__main__':
                       help='The momentum for sgd.')
     conf.add_argument('--triplet_margin', type=float, default=3.0)
     conf.add_argument('--masked_ratio', type=float, default=0.5)
+    conf.add_argument('--mls_loss_weight', type=float, default=1.0)
+    conf.add_argument('--output_constraint_loss_weight', type=float, default=0.001)
+    conf.add_argument('--discriminate_loss_weight', type=float, default=0.001)
     conf.add_argument('--log_dir', type=str, default='log',
                       help='The directory to save log.log')
     conf.add_argument('--tensorboardx_logdir', type=str,
@@ -335,4 +355,10 @@ if __name__ == '__main__':
     conf.add_argument('--sync_bn', action='store_true', help='use SyncBatchNorm, only available in DDP mode')
     args = conf.parse_args()
     args.milestones = [int(num) for num in args.step.split(',')]
+
+    try:
+        set_start_method('spawn')
+    except RuntimeError:
+        pass
+
     train(args)

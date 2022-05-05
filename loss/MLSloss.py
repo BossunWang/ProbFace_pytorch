@@ -10,7 +10,8 @@ class MLSLoss(nn.Module):
 
     def negMLS(self, mu_X, sigma_sq_X):
         cos_theta = torch.matmul(mu_X, mu_X.T)
-        sig_sum = sigma_sq_X.expand(-1, mu_X.size(0)) + sigma_sq_X.expand(-1, mu_X.size(0))
+        # sig_sum = sigma_sq_X.unsqueeze(1) + sigma_sq_X.unsqueeze(0)
+        sig_sum = sigma_sq_X + sigma_sq_X.T
         # diffs = 2*(1-cos_theta) / (1e-10 + sigma_sq_fuse) + tf.log(sigma_sq_fuse)
         diff = 2 * (1 - cos_theta) / (1e-10 + sig_sum) + torch.log(sig_sum)
         attention_mat = 2 * (1 - cos_theta) / (1e-10 + sig_sum)
@@ -22,11 +23,17 @@ class MLSLoss(nn.Module):
 
         loss_mat, attention_mat = self.negMLS(mu_X, sig_X)
         gty_mask = (torch.eq(gty[:, None], gty[None, :])).int()
+        # print("non_diag_mask:", non_diag_mask)
         # print("gty_mask:", gty_mask)
+        # print("not gty_mask:", 1 - gty_mask)
         pos_mask = (non_diag_mask * gty_mask) > 0
+        neg_mask = (non_diag_mask * (1 - gty_mask)) > 0
         # print("pos_mask:", pos_mask)
+        # print("neg_mask:", neg_mask)
         pos_loss = loss_mat[pos_mask].mean()
-        return pos_loss, attention_mat
+        mean_pos = attention_mat[pos_mask].mean()
+        mean_neg = attention_mat[neg_mask].mean()
+        return pos_loss, attention_mat, mean_pos, mean_neg
 
 
 if __name__ == '__main__':
@@ -50,7 +57,7 @@ if __name__ == '__main__':
 
     label = torch.randint(0, 2, (batch_size, )).to(device)
     print("label:", label)
-    MLS_loss, attention_mat = MLS(feat.detach(), log_sigma_sq, label)
+    MLS_loss, attention_mat, mean_pos, mean_neg = MLS(feat.detach(), log_sigma_sq, label)
     print("MLS loss:", MLS_loss)
     print("attention_mat:", attention_mat)
     MLS_loss.backward()
