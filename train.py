@@ -9,6 +9,8 @@ import logging as logger
 import random
 import numpy as np
 from contextlib import contextmanager
+import sys
+sys.path.append("face_mask_adding/FMA-3D")
 
 import torch
 import torch.distributed as dist
@@ -24,6 +26,8 @@ from data.train_dataset import ImageDataset
 from model import backbone, uncertainty_head
 from loss import MLSloss, triplet_semihard_loss
 from utils.AverageMeter import AverageMeter
+from models.prnet import PRNet
+
 
 logger.basicConfig(level=logger.INFO,
                    format='%(levelname)s %(asctime)s %(filename)s: %(lineno)d] %(message)s',
@@ -113,15 +117,6 @@ def load_backbone_pretrained_model(architecture='ir_50'):
     return model
 
 
-def shuffle_BN(batch_size):
-    """ShuffleBN for batch, the same as MoCo https://arxiv.org/abs/1911.05722 #######
-    """
-    shuffle_ids = torch.randperm(batch_size).long().cuda()
-    reshuffle_ids = torch.zeros(batch_size).long().cuda()
-    reshuffle_ids.index_copy_(0, shuffle_ids, torch.arange(batch_size).long().cuda())
-    return shuffle_ids, reshuffle_ids
-
-
 def train_one_epoch(data_loader
                     , model, head
                     , optimizer, MLS, TripletSemiHard
@@ -137,12 +132,14 @@ def train_one_epoch(data_loader
         labels = labels.to(device)
         batch_size, sample_size, ch, h, w = images.size()
         batch_sample_size = batch_size * sample_size
-        shuffle_ids, reshuffle_ids = shuffle_BN(batch_sample_size)
+        shuffle_ids = torch.randperm(batch_size).long().to(device)
         images = images.view(-1, ch, h, w)[shuffle_ids]
         labels = labels.view(-1)[shuffle_ids]
 
         with torch.no_grad():
-            features, feature_fusions, _ = model(images)
+            features, feature_fusions = model(images)
+            norm = torch.norm(features, 2, 1, True)
+            features = torch.div(features, norm)
 
         log_sigma_sq = head(feature_fusions)
 
@@ -186,6 +183,10 @@ def train_one_epoch(data_loader
             args.writer.add_scalar('Train_MLS_loss', MLS_loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_triplet_semihard_loss', triplet_semihard_loss_avg, global_batch_idx)
             args.writer.add_scalar('Train_output_constraint_loss', output_constraint_loss_avg, global_batch_idx)
+            args.writer.add_scalar('Train_mean_pos', mean_pos, global_batch_idx)
+            args.writer.add_scalar('Train_mean_neg', mean_neg, global_batch_idx)
+            args.writer.add_scalar('Train_sigma_sq_max', sigma_sq_max, global_batch_idx)
+            args.writer.add_scalar('Train_sigma_sq_min', sigma_sq_min, global_batch_idx)
             args.writer.add_scalar('Train_lr', lr, global_batch_idx)
 
             MLS_loss_meter.reset()
@@ -238,24 +239,15 @@ def train(args):
     cuda = device.type != 'cpu'
     init_seeds(2 + args.local_rank)
 
-    # Make sure only the first process in DDP process the dataset first, and the following others can use the cache
-    with torch_distributed_zero_first(args.local_rank):
-        trainset = ImageDataset(args.data_root
-                                , args.train_file
-                                , sample_size=args.sample_size
-                                , data_aug=args.data_aug
-                                , masked_ratio=args.masked_ratio)
-    train_sampler = torch.utils.data.distributed.DistributedSampler(trainset) if args.local_rank != -1 else None
-    train_loader = DataLoader(dataset=trainset,
-                              batch_size=args.batch_size,
-                              sampler=train_sampler,
-                              num_workers=args.workers,
-                              pin_memory=True,
-                              drop_last=False)
-
     model = load_backbone_pretrained_model(args.backbone_type)
     model = model.to(device)
     model.eval()
+
+    prnet = PRNet(3, 3).to(device)
+    prnet_model_path = "face_mask_adding/FMA-3D/models/prnet.pth"
+    state_dict = torch.load(prnet_model_path)
+    prnet.load_state_dict(state_dict)
+    prnet.eval()
 
     for param in model.parameters():
         param.requires_grad = False
@@ -287,6 +279,7 @@ def train(args):
     # DP mode
     if cuda and args.local_rank == -1 and torch.cuda.device_count() > 1:
         unh = torch.nn.DataParallel(unh)
+        prnet = torch.nn.DataParallel(prnet)
 
     # SyncBatchNorm
     if args.sync_bn and cuda and args.local_rank != -1:
@@ -296,6 +289,24 @@ def train(args):
     # DDP mode
     if cuda and args.local_rank != -1:
         unh = DDP(unh, device_ids=[args.local_rank], output_device=args.local_rank)
+        prnet = DDP(prnet, device_ids=[args.local_rank], output_device=args.local_rank)
+
+    # Make sure only the first process in DDP process the dataset first, and the following others can use the cache
+    with torch_distributed_zero_first(args.local_rank):
+        trainset = ImageDataset(args.data_root
+                                , args.train_file
+                                , sample_size=args.sample_size
+                                , data_aug=args.data_aug
+                                , masked_ratio=args.masked_ratio
+                                , device=args.device
+                                , prnet_model=prnet)
+    train_sampler = torch.utils.data.distributed.DistributedSampler(trainset) if args.local_rank != -1 else None
+    train_loader = DataLoader(dataset=trainset,
+                              batch_size=args.batch_size,
+                              sampler=train_sampler,
+                              num_workers=args.workers,
+                              pin_memory=True,
+                              drop_last=False)
 
     for epoch in range(ori_epoch, args.epoches):
         train_one_epoch(train_loader
@@ -356,9 +367,9 @@ if __name__ == '__main__':
     args = conf.parse_args()
     args.milestones = [int(num) for num in args.step.split(',')]
 
-    try:
-        set_start_method('spawn')
-    except RuntimeError:
-        pass
+    # try:
+    #     set_start_method('spawn')
+    # except RuntimeError:
+    #     pass
 
     train(args)

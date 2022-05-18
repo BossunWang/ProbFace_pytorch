@@ -27,7 +27,7 @@ from face_masker import FaceMasker
 class ImageDataset(Dataset):
     def __init__(self, data_root, data_list_path
                  , img_size=112, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]
-                 , sample_size=1, data_aug=False, masked_ratio=0.5):
+                 , sample_size=1, data_aug=False, masked_ratio=0.5, device=None, prnet_model=None):
         self.data_root = data_root
         self.img_size = img_size
         self.mean = mean
@@ -54,7 +54,8 @@ class ImageDataset(Dataset):
                                             , 'face_mask_adding/FMA-3D/Data/mask-data')
         self.face_masker_list \
             = [FaceMasker(is_aug, mask_offset
-                          , prnet_model_path, index_path, triangles_path, uv_face_path, mask_template_folder)
+                          , prnet_model_path, index_path, triangles_path, uv_face_path, mask_template_folder
+                          , device, prnet_model)
                for mask_offset in self.mask_offset_list]
 
         self.masked_ratio = masked_ratio
@@ -182,6 +183,10 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from tqdm import tqdm
     import time
+    import sys
+
+    sys.path.append("../face_mask_adding/FMA-3D")
+    from models.prnet import PRNet
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -189,8 +194,16 @@ if __name__ == '__main__':
     data_list_path = "data.pkl"
     batch_size = 8
 
+    prnet = PRNet(3, 3).to(device)
+    prnet_model_path = "../face_mask_adding/FMA-3D/models/prnet.pth"
+    state_dict = torch.load(prnet_model_path)
+    prnet.load_state_dict(state_dict)
+    prnet.eval()
+
     id_loader = DataLoader(
-        ImageDataset(data_root, data_list_path, sample_size=16, data_aug=False, masked_ratio=1.0),
+        ImageDataset(data_root, data_list_path
+                     , sample_size=16, data_aug=False, masked_ratio=1.0
+                     , device=device, prnet_model=prnet),
         batch_size, shuffle=True, num_workers=0, drop_last=True)
 
     batch_iter = iter(id_loader)

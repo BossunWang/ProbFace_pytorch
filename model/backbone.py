@@ -345,10 +345,8 @@ class Backbone(Module):
         feature_fusion = torch.cat(feature_list, dim=1)
         feature_fusion = torch.flatten(feature_fusion, start_dim=1)
 
-        x = self.output_layer(x)
-        norm = torch.norm(x, 2, 1, True)
-        output = torch.div(x, norm)
-        return output, feature_fusion, norm
+        output = self.output_layer(x)
+        return output, feature_fusion
 
 
 def IR_18(input_size):

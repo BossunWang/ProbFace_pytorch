@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     with torch.no_grad():
         start = time.time()
-        feature, feature_fusion, norm = model(torch.randn(batch_size, 3, 112, 112).to(device))
+        feature, feature_fusion = model(torch.randn(batch_size, 3, 112, 112).to(device))
         end = time.time()
         print("fw time: ", end - start)
         print("feature:", feature.size())

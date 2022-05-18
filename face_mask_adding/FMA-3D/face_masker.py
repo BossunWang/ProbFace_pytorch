@@ -23,17 +23,24 @@ class PRN:
     based on:
     https://github.com/YadiraF/PRNet/blob/master/api.py
     """
-    def __init__(self, model_path, index_path='Data/uv-data/face_ind.txt', triangles_path='Data/uv-data/triangles.txt'):
+    def __init__(self, model_path
+                 , index_path='Data/uv-data/face_ind.txt', triangles_path='Data/uv-data/triangles.txt'
+                 , device=None, prnet_model=None):
         self.resolution = 256
         self.MaxPos = self.resolution*1.1
         self.face_ind = np.loadtxt(index_path).astype(np.int32)
         self.triangles = np.loadtxt(triangles_path).astype(np.int32)
-        self.net = PRNet(3, 3)
-        state_dict = torch.load(model_path)
-        self.net.load_state_dict(state_dict)
-        self.net.eval()
         if torch.cuda.is_available():
-            self.net = self.net.to('cuda')
+            self.device = device if device is not None else "cuda"
+        if prnet_model is not None:
+            self.net = prnet_model
+        else:
+            self.net = PRNet(3, 3)
+            state_dict = torch.load(model_path)
+            self.net.load_state_dict(state_dict)
+            self.net.eval()
+            if torch.cuda.is_available():
+                self.net = self.net.to(self.device)
 
     def process(self, image, image_info):
         if np.max(image_info.shape) > 4: # key points to get bounding box
@@ -58,7 +65,7 @@ class PRN:
         cropped_image = np.transpose(cropped_image[np.newaxis, :,:,:], (0, 3, 1, 2)).astype(np.float32)
         cropped_image = torch.from_numpy(cropped_image)
         if torch.cuda.is_available():
-            cropped_image = cropped_image.cuda()
+            cropped_image = cropped_image.to(self.device)
         with torch.no_grad():
             cropped_pos = self.net(cropped_image)
         cropped_pos = cropped_pos.cpu().detach().numpy()
@@ -93,7 +100,8 @@ class FaceMasker:
     """
     def __init__(self, is_aug, mask_offset=0, model_path="models/prnet.pth"
                  , index_path='Data/uv-data/face_ind.txt', triangles_path='Data/uv-data/triangles.txt'
-                 , uv_face_path='Data/uv-data/uv_face_mask.png', mask_template_folder='Data/mask-data'):
+                 , uv_face_path='Data/uv-data/uv_face_mask.png', mask_template_folder='Data/mask-data'
+                 , device=None, prnet_model=None):
         """init for FaceMasker
 
         Args:
@@ -101,7 +109,7 @@ class FaceMasker:
         """
         self.uv_face_path = uv_face_path
         self.mask_template_folder = mask_template_folder
-        self.prn = PRN(model_path, index_path, triangles_path)
+        self.prn = PRN(model_path, index_path, triangles_path, device=device, prnet_model=prnet_model)
         self.mask_offset = mask_offset
         self.template_name2ref_texture_src, self.template_name2uv_mask_src = self.get_ref_texture_src()
         self.is_aug = is_aug
