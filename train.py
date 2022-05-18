@@ -306,7 +306,7 @@ def train(args):
                               sampler=train_sampler,
                               num_workers=args.workers,
                               pin_memory=True,
-                              drop_last=False)
+                              drop_last=True)
 
     for epoch in range(ori_epoch, args.epoches):
         train_one_epoch(train_loader
