@@ -258,7 +258,7 @@ def train(args):
 
     if args.resume:
         ckpt = torch.load(args.pretrain_model, map_location=device)  # load checkpoint
-        state_dict = ckpt['state_dict'].state_dict()
+        state_dict = ckpt['state_dict']
         unh.load_state_dict(state_dict, strict=True)  # load
 
     # Optimizer
