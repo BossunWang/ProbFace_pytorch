@@ -345,11 +345,11 @@ img_list = open(img_list_path)
 files = img_list.readlines()
 files_list = files
 
-# img_feats, img_log_sigma, faceness_scores \
-#     = get_image_feature(img_path, files_list, model_path, uc_model_path, model_type, gpu_id)
-# stop = timeit.default_timer()
-# print('Time: %.2f s. ' % (stop - start))
-# print('Feature Shape: ({} , {}) .'.format(img_feats.shape[0], img_feats.shape[1]))
+img_feats, img_log_sigma, faceness_scores \
+    = get_image_feature(img_path, files_list, model_path, uc_model_path, model_type, gpu_id)
+stop = timeit.default_timer()
+print('Time: %.2f s. ' % (stop - start))
+print('Feature Shape: ({} , {}) .'.format(img_feats.shape[0], img_feats.shape[1]))
 
 save_path = result_dir + '/%s_result' % target
 # save_path = './%s_result' % target
@@ -360,14 +360,14 @@ if not os.path.exists(save_path):
 feats_save_file = os.path.join(save_path, "%s_feats.npy" % job)
 log_sigma_save_file = os.path.join(save_path, "%s_log_sigma.npy" % job)
 faceness_scores_file = os.path.join(save_path, "%s_faceness_scores.npy" % job)
-# np.save(feats_save_file, img_feats)
-# np.save(log_sigma_save_file, img_log_sigma)
-# np.save(faceness_scores_file, faceness_scores)
+np.save(feats_save_file, img_feats)
+np.save(log_sigma_save_file, img_log_sigma)
+np.save(faceness_scores_file, faceness_scores)
 
 
-img_feats = np.load(feats_save_file)
-img_log_sigma = np.load(log_sigma_save_file)
-faceness_scores = np.load(faceness_scores_file)
+# img_feats = np.load(feats_save_file)
+# img_log_sigma = np.load(log_sigma_save_file)
+# faceness_scores = np.load(faceness_scores_file)
 
 # # Step3: Get Template Features
 
