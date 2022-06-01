@@ -279,7 +279,6 @@ def train(args):
     # DP mode
     if cuda and args.local_rank == -1 and torch.cuda.device_count() > 1:
         unh = torch.nn.DataParallel(unh)
-        prnet = torch.nn.DataParallel(prnet)
 
     # SyncBatchNorm
     if args.sync_bn and cuda and args.local_rank != -1:
@@ -289,7 +288,6 @@ def train(args):
     # DDP mode
     if cuda and args.local_rank != -1:
         unh = DDP(unh, device_ids=[args.local_rank], output_device=args.local_rank)
-        prnet = DDP(prnet, device_ids=[args.local_rank], output_device=args.local_rank)
 
     # Make sure only the first process in DDP process the dataset first, and the following others can use the cache
     with torch_distributed_zero_first(args.local_rank):
@@ -298,7 +296,7 @@ def train(args):
                                 , sample_size=args.sample_size
                                 , data_aug=args.data_aug
                                 , masked_ratio=args.masked_ratio
-                                , device=args.device
+                                , device=device
                                 , prnet_model=prnet)
     train_sampler = torch.utils.data.distributed.DistributedSampler(trainset) if args.local_rank != -1 else None
     train_loader = DataLoader(dataset=trainset,
@@ -367,9 +365,10 @@ if __name__ == '__main__':
     args = conf.parse_args()
     args.milestones = [int(num) for num in args.step.split(',')]
 
-    # try:
-    #     set_start_method('spawn')
-    # except RuntimeError:
-    #     pass
+    try:
+        set_start_method('spawn')
+    except RuntimeError:
+        pass
 
     train(args)
+    logger.info("training done")
