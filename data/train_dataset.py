@@ -145,14 +145,14 @@ class ImageDataset(Dataset):
 
         image_list = []
 
-        for image_path in file_list:
+        for index, image_path in enumerate(file_list):
             image_path = os.path.join(self.data_root, cur_id, image_path)
 
             face_masker = None
             landmarks = None
             template_name = None
 
-            if self.masked_ratio > 0.:
+            if self.masked_ratio > 0. and index > self.sample_size // 2:
                 img = dlib.load_rgb_image(image_path)
                 dets = self.detector(img, 1)
                 if len(dets) == 1 and random.random() > (1.0 - self.masked_ratio):
