@@ -16,4 +16,5 @@ CUDA_VISIBLE_DEVICES=1 python -u IJB_11_uc.py \
   --image-path ../../face_dataset/IJB-C/IJB/IJB_release/IJBC \
   --job ir101_adaface_uc_masked \
   --result-dir "ir101_adaface_uc_masked" \
+  --skip_extraction \
 2>&1 | tee ir101_adaface_uc_masked.log

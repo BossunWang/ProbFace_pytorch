@@ -38,6 +38,7 @@ parser.add_argument('--gpu', default=0, type=int, help='gpu id')
 parser.add_argument('--batch-size', default=128, type=int, help='')
 parser.add_argument('--job', default='', type=str, help='job name')
 parser.add_argument('--target', default='IJBC', type=str, help='target, set to IJBC or IJBB')
+parser.add_argument('--skip_extraction', action='store_true', default=False)
 args = parser.parse_args()
 
 target = args.target
@@ -345,12 +346,6 @@ img_list = open(img_list_path)
 files = img_list.readlines()
 files_list = files
 
-img_feats, img_log_sigma, faceness_scores \
-    = get_image_feature(img_path, files_list, model_path, uc_model_path, model_type, gpu_id)
-stop = timeit.default_timer()
-print('Time: %.2f s. ' % (stop - start))
-print('Feature Shape: ({} , {}) .'.format(img_feats.shape[0], img_feats.shape[1]))
-
 save_path = result_dir + '/%s_result' % target
 # save_path = './%s_result' % target
 
@@ -360,14 +355,21 @@ if not os.path.exists(save_path):
 feats_save_file = os.path.join(save_path, "%s_feats.npy" % job)
 log_sigma_save_file = os.path.join(save_path, "%s_log_sigma.npy" % job)
 faceness_scores_file = os.path.join(save_path, "%s_faceness_scores.npy" % job)
-np.save(feats_save_file, img_feats)
-np.save(log_sigma_save_file, img_log_sigma)
-np.save(faceness_scores_file, faceness_scores)
 
+if args.skip_extraction:
+    img_feats = np.load(feats_save_file)
+    img_log_sigma = np.load(log_sigma_save_file)
+    faceness_scores = np.load(faceness_scores_file)
+else:
+    img_feats, img_log_sigma, faceness_scores \
+        = get_image_feature(img_path, files_list, model_path, uc_model_path, model_type, gpu_id)
+    np.save(feats_save_file, img_feats)
+    np.save(log_sigma_save_file, img_log_sigma)
+    np.save(faceness_scores_file, faceness_scores)
 
-# img_feats = np.load(feats_save_file)
-# img_log_sigma = np.load(log_sigma_save_file)
-# faceness_scores = np.load(faceness_scores_file)
+stop = timeit.default_timer()
+print('Time: %.2f s. ' % (stop - start))
+print('Feature Shape: ({} , {}) .'.format(img_feats.shape[0], img_feats.shape[1]))
 
 # # Step3: Get Template Features
 
@@ -451,19 +453,24 @@ x_labels = [10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2, 10 ** -1]
 tpr_fpr_table = PrettyTable(['Methods'] + [str(x) for x in x_labels])
 fig = plt.figure()
 for method in methods:
-    fpr, tpr, _ = roc_curve(label, scores[method])
+    fpr, tpr, thresholds = roc_curve(label, scores[method])
     roc_auc = auc(fpr, tpr)
     fpr = np.flipud(fpr)
     tpr = np.flipud(tpr)  # select largest tpr at same fpr
+    thresholds = np.flipud(thresholds)
     plt.plot(fpr, tpr, color=colours[method], lw=1,
              label=('[%s (AUC = %0.4f %%)]' % (method.split('-')[-1], roc_auc * 100)))
     tpr_fpr_row = []
+    thresholds_row = []
     tpr_fpr_row.append("%s-%s" % (method, target))
+    thresholds_row.append("%s-%s" % (method, target))
     for fpr_iter in np.arange(len(x_labels)):
         _, min_index = min(list(zip(abs(fpr - x_labels[fpr_iter]), range(len(fpr)))))
         # tpr_fpr_row.append('%.4f' % tpr[min_index])
         tpr_fpr_row.append('%.2f' % (tpr[min_index] * 100))
+        thresholds_row.append('%.4f' % (thresholds[min_index]))
     tpr_fpr_table.add_row(tpr_fpr_row)
+    tpr_fpr_table.add_row(thresholds_row)
 plt.xlim([10 ** -6, 0.1])
 plt.ylim([0.3, 1.0])
 plt.grid(linestyle='--', linewidth=1)
