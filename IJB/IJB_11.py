@@ -368,19 +368,24 @@ x_labels = [10 ** -6, 10 ** -5, 10 ** -4, 10 ** -3, 10 ** -2, 10 ** -1]
 tpr_fpr_table = PrettyTable(['Methods'] + [str(x) for x in x_labels])
 fig = plt.figure()
 for method in methods:
-    fpr, tpr, _ = roc_curve(label, scores[method])
+    fpr, tpr, thresholds = roc_curve(label, scores[method])
     roc_auc = auc(fpr, tpr)
     fpr = np.flipud(fpr)
     tpr = np.flipud(tpr)  # select largest tpr at same fpr
+    thresholds = np.flipud(thresholds)
     plt.plot(fpr, tpr, color=colours[method], lw=1,
              label=('[%s (AUC = %0.4f %%)]' % (method.split('-')[-1], roc_auc * 100)))
     tpr_fpr_row = []
+    thresholds_row = []
     tpr_fpr_row.append("%s-%s" % (method, target))
+    thresholds_row.append("%s-%s" % (method, target))
     for fpr_iter in np.arange(len(x_labels)):
         _, min_index = min(list(zip(abs(fpr - x_labels[fpr_iter]), range(len(fpr)))))
         # tpr_fpr_row.append('%.4f' % tpr[min_index])
         tpr_fpr_row.append('%.2f' % (tpr[min_index] * 100))
+        thresholds_row.append('%.4f' % (thresholds[min_index]))
     tpr_fpr_table.add_row(tpr_fpr_row)
+    tpr_fpr_table.add_row(thresholds_row)
 plt.xlim([10 ** -6, 0.1])
 plt.ylim([0.3, 1.0])
 plt.grid(linestyle='--', linewidth=1)
