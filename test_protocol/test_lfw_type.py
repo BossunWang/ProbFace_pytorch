@@ -56,7 +56,7 @@ if __name__ == '__main__':
                       help="lfw, cplfw, calfw, agedb, rfw_African, \
                       rfw_Asian, rfw_Caucasian, rfw_Indian.")
     conf.add_argument("--offline_mode", type=bool, default=False)
-    conf.add_argument("--load_feature", type=bool, default=True)
+    conf.add_argument("--load_feature", type=bool, default=False)
     conf.add_argument("--data_conf_file", type=str,
                       help="the path of data_conf.yaml.")
     conf.add_argument("--backbone_type", type=str,
@@ -70,7 +70,6 @@ if __name__ == '__main__':
     conf.add_argument('--mean', type=float, default=127.5)
     conf.add_argument('--std', type=float, default=127.5)
     args = conf.parse_args()
-    args.offline_mode = False
     # parse config.
     with open(args.data_conf_file) as f:
         data_conf = yaml.load(f, Loader=yaml.FullLoader)[args.test_set]
