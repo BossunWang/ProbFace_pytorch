@@ -1,0 +1,554 @@
+LFW:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image
+    image_list_file_path: None
+
+CPLFW:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image
+    image_list_file_path: None
+
+CALFW:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image
+    image_list_file_path: None
+
+AgeDB30:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image
+    image_list_file_path: None
+
+CFP_FP:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image
+    image_list_file_path: None
+
+RFW_African:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African
+    image_list_file_path: None
+
+RFW_Asian:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian
+    image_list_file_path: None
+
+RFW_Caucasian:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian
+    image_list_file_path: None
+
+RFW_Indian:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian
+    image_list_file_path: None
+
+NIST_SD32_MEDS_II:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/NIST_SD32_MEDS_II_face_crop.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/NIST_SD32_MEDS_II_face_crop
+    image_list_file_path: None
+
+MegaFace:
+    facescrub_list: ../data/files/facescrub_features_list.json
+    megaceface_list: ../data/files/megaface_features_list.json_1000000_1
+    facescrub_noises_file: ../../face_dataset/MegaFace/facescrub_noises.txt
+    megaface_noises_file: ../../face_dataset/MegaFace/megaface_noises.txt
+    croped_facescrub_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/face_crop_arcface/facescrub_crop
+    croped_megaface_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/face_crop_arcface/megaface_crop
+    megaface-mask: 1
+    masked_croped_facescrub_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/face_crop_arcface/masked_facescrub_crop
+
+LFW_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask0
+    image_list_file_path: None
+
+LFW_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask1
+    image_list_file_path: None
+
+LFW_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask2
+    image_list_file_path: None
+
+LFW_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask3
+    image_list_file_path: None
+
+LFW_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask4
+    image_list_file_path: None
+
+LFW_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask5
+    image_list_file_path: None
+
+LFW_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask6
+    image_list_file_path: None
+
+LFW_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/lfw_align_112/lfw/image_mask7
+    image_list_file_path: None
+
+RFW_African_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask0/African
+    image_list_file_path: None
+
+RFW_African_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask1/African
+    image_list_file_path: None
+
+RFW_African_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask2/African
+    image_list_file_path: None
+
+RFW_African_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask3/African
+    image_list_file_path: None
+
+RFW_African_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask4/African
+    image_list_file_path: None
+
+RFW_African_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask5/African
+    image_list_file_path: None
+
+RFW_African_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask6/African
+    image_list_file_path: None
+
+RFW_African_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/African/African_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/African,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask7/African
+    image_list_file_path: None
+
+RFW_Asian_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask0/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask1/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask2/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask3/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask4/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask5/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask6/Asian
+    image_list_file_path: None
+
+RFW_Asian_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Asian/Asian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Asian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask7/Asian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask0/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask1/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask2/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask3/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask4/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask5/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask6/Caucasian
+    image_list_file_path: None
+
+RFW_Caucasian_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Caucasian/Caucasian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Caucasian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask7/Caucasian
+    image_list_file_path: None
+
+RFW_Indian_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask0/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask1/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask2/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask3/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask4/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask5/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask6/Indian
+    image_list_file_path: None
+
+RFW_Indian_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/txts/Indian/Indian_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/RFW_crop/Indian,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/RFW/images/test/image_mask7/Indian
+    image_list_file_path: None
+
+CPLFW_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask0
+    image_list_file_path: None
+
+CPLFW_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask1
+    image_list_file_path: None
+
+CPLFW_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask2
+    image_list_file_path: None
+
+CPLFW_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask3
+    image_list_file_path: None
+
+CPLFW_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask4
+    image_list_file_path: None
+
+CPLFW_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask5
+    image_list_file_path: None
+
+CPLFW_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask6
+    image_list_file_path: None
+
+CPLFW_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cplfw_align_112/cplfw/image_mask7
+    image_list_file_path: None
+
+CALFW_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask0
+    image_list_file_path: None
+
+CALFW_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask1
+    image_list_file_path: None
+
+CALFW_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask2
+    image_list_file_path: None
+
+CALFW_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask3
+    image_list_file_path: None
+
+CALFW_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask4
+    image_list_file_path: None
+
+CALFW_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask5
+    image_list_file_path: None
+
+CALFW_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask6
+    image_list_file_path: None
+
+CALFW_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/calfw_align_112/calfw/image_mask7
+    image_list_file_path: None
+
+AgeDB30_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask0
+    image_list_file_path: None
+
+AgeDB30_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask1
+    image_list_file_path: None
+
+AgeDB30_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask2
+    image_list_file_path: None
+
+AgeDB30_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask3
+    image_list_file_path: None
+
+AgeDB30_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask4
+    image_list_file_path: None
+
+AgeDB30_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask5
+    image_list_file_path: None
+
+AgeDB30_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask6
+    image_list_file_path: None
+
+AgeDB30_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/agedb_align_112/AgeDB/agedb_30/image_mask7
+    image_list_file_path: None
+
+CFP_FP_MASK0:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask0
+    image_list_file_path: None
+
+CFP_FP_MASK1:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask1
+    image_list_file_path: None
+
+CFP_FP_MASK2:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask2
+    image_list_file_path: None
+
+CFP_FP_MASK3:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask3
+    image_list_file_path: None
+
+CFP_FP_MASK4:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask4
+    image_list_file_path: None
+
+CFP_FP_MASK5:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask5
+    image_list_file_path: None
+
+CFP_FP_MASK6:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask6
+    image_list_file_path: None
+
+CFP_FP_MASK7:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp_list.npy
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/cfp_align_112/cfp_align_112_extract_images/cfp_fp/image_mask7
+    image_list_file_path: None
+
+Masked_whn:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/masked_whn_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/masked_whn_crop
+    image_list_file_path: None
+
+MLFW:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MLFW/MLFW_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MLFW_crop
+    image_list_file_path: None
+
+NIST_SD32_MEDS_II_face_FMA_mask:
+    pairs_file_path: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/NIST_SD32_MEDS_II_face_FMA_mask_arcface_crop_without_background_pairs.txt
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/NIST_SD32_MEDS_II_face_crop,/media/glory/Transcend/Dataset/Face_Recognition_Dataset/NIST_SD32_MEDS_II_face_FMA_mask_crop
+    image_list_file_path: None
+
+GEO_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_crop_1N
+    image_list_file_path: None
+
+GEO_env_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_env_crop_1N
+    image_list_file_path: None
+
+GEO_v1_march_no_mask_r480_c569_ff_output_categorize:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_v1_march_no_mask_r480_c569_ff_output_categorize
+    image_list_file_path: None
+
+GEO_v1_march_mask_r480_c1831_ff_output_categorize:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_v1_march_mask_r480_c1831_ff_output_categorize
+    image_list_file_path: None
+
+GEO_v1_march_no_mask_r480_c569_ff_output_categorize_half_enroll:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_v1_march_no_mask_r480_c569_ff_output_categorize_half_enroll
+    image_list_file_path: None
+
+GEO_v1_march_mask_r480_c1831_ff_output_categorize_half_enroll:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_v1_march_mask_r480_c1831_ff_output_categorize_half_enroll
+    image_list_file_path: None
+
+GEO_FR_Panel_1N_mask:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_mask
+    image_list_file_path: None
+
+GEO_FR_Panel_1N_non_mask:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_non_mask
+    image_list_file_path: None
+
+GEO_FR_Panel_1N_mask_origin_crop:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_mask_origin_crop
+    image_list_file_path: None
+
+GEO_FR_Panel_1N_non_mask_origin_crop:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_non_mask_origin_crop
+    image_list_file_path: None
+
+GEO_FR_Panel_1N_origin_crop:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_origin_crop
+    image_list_file_path: None
+
+GEO_joy_crop:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_joy_crop
+    image_list_file_path: None
+
+GEO_joy_origin_crop:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_joy_origin_crop
+    image_list_file_path: None
+
+GEO_env_mask_synthesis_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_env_mask_synthesis_crop_1N
+    image_list_file_path: None
+
+GEO_identity_mask_synthesis_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_identity_mask_synthesis_crop_1N
+    image_list_file_path: None
+
+GEO_Mask_Testing_Dataset_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_Mask_Testing_Dataset_crop_1N
+    image_list_file_path: None
+
+GEO_FAR_crop_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FAR_crop_1N
+    image_list_file_path: None
+
+MEDS_II_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/MEDS_II_1N
+    image_list_file_path: None
+
+GEO_FR_panel_features_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_panel_features
+    image_list_file_path: None
+
+GEO_FR_panel_features_GEO001_1N:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_panel_features_geo001
+    image_list_file_path: None
+
+GEO_20210903_FR_Panel_Jimmy:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_20210903_FR_Panel_Jimmy_crop
+    image_list_file_path: None
+
+GEO_20210903_FR_Panel_Kevin:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_20210903_FR_Panel_Kevin_crop
+    image_list_file_path: None
+
+GEO_20210903_FR_Panel_Lisa:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_20210903_FR_Panel_Lisa_crop
+    image_list_file_path: None
+
+GEO_20210903_FR_Panel_Ray:
+    pairs_file_path: None
+    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_20210903_FR_Panel_Ray_crop
+    image_list_file_path: None
