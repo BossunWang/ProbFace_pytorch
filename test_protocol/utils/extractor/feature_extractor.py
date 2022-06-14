@@ -184,7 +184,13 @@ class CommonExtractor:
                     mu, conv_final = model(images)
                     logvar = second_model(conv_final)
                     sigma_x = torch.exp(logvar)
-                    features = torch.cat([mu, sigma_x], dim=1).cpu().numpy()                    
+                    features = torch.cat([mu, sigma_x], dim=1).cpu().numpy()
+                elif list_flag == 'ProbFace':
+                    feat, feature_fusions = model(images)
+                    log_sigma_sq = second_model(feature_fusions)
+                    sigma_x = torch.exp(log_sigma_sq)
+                    feat = F.normalize(feat)
+                    features = torch.cat([feat, sigma_x], dim=1).cpu().numpy()
                 elif list_flag == 'SRT':
                     mu, conv_final = model(images)
                     output_feature = second_model(mu)

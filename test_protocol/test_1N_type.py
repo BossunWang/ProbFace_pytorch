@@ -18,8 +18,7 @@ from utils.model_loader import ModelLoader
 from utils.extractor.feature_extractor import CommonExtractor
 
 sys.path.append('..')
-from data_processor.test_dataset import TestDataset1N, TestDataset1NFromJason
-from backbone.backbone_def import BackboneFactory
+from data.test_dataset import TestDataset1N, TestDataset1NFromJason
 
 
 def accu_key(elem):
@@ -61,6 +60,7 @@ if __name__ == '__main__':
                       help="Resnet, Mobilefacenets..")
     conf.add_argument("--backbone_conf_file", type=str,
                       help="The path of backbone_conf.yaml.")
+    conf.add_argument("--load_backbone_only", action='store_true', default=False)
     conf.add_argument('--batch_size', type=int, default=1024)
     conf.add_argument('--threshold', type=float, default=0.5)
     conf.add_argument('--from_json', type=bool, default=False)
@@ -106,10 +106,7 @@ if __name__ == '__main__':
                                           , batch_size=args.batch_size
                                           , num_workers=4, shuffle=False)
         # model def
-        backbone_factory = BackboneFactory(args.backbone_type, args.backbone_conf_file)
-        uncertainty_backbone_factory = BackboneFactory('UncertaintyHead', args.backbone_conf_file)
-        eum_backbone_factory = BackboneFactory('EmbeddingUnmaskingModel', args.backbone_conf_file)
-        model_loader = ModelLoader(backbone_factory, uncertainty_backbone_factory, eum_backbone_factory, device)
+        model_loader = ModelLoader(args.backbone_type, device)
         feature_extractor = CommonExtractor(device)
         evaluator_1N = Evaluator1N(enroll_data_loader, identity_data_loader, feature_extractor)
         if os.path.isdir(args.model_path):

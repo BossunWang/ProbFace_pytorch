@@ -465,22 +465,22 @@ GEO_v1_march_mask_r480_c1831_ff_output_categorize_half_enroll:
 
 GEO_FR_Panel_1N_mask:
     pairs_file_path: None
-    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_mask
+    croped_face_folder: ../../../face_dataset/GEO_FR_Panel_1N_mask
     image_list_file_path: None
 
 GEO_FR_Panel_1N_non_mask:
     pairs_file_path: None
-    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_non_mask
+    croped_face_folder: ../../../face_dataset/GEO_FR_Panel_1N_non_mask
     image_list_file_path: None
 
 GEO_FR_Panel_1N_mask_origin_crop:
     pairs_file_path: None
-    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_mask_origin_crop
+    croped_face_folder: ../../../face_dataset/GEO_FR_Panel_1N_mask_origin_crop
     image_list_file_path: None
 
 GEO_FR_Panel_1N_non_mask_origin_crop:
     pairs_file_path: None
-    croped_face_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/1N_test_dataset/GEO_FR_Panel_1N_non_mask_origin_crop
+    croped_face_folder: ../../../face_dataset/GEO_FR_Panel_1N_non_mask_origin_crop
     image_list_file_path: None
 
 GEO_FR_Panel_1N_origin_crop:

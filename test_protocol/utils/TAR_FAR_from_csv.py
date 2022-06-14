@@ -17,7 +17,8 @@ key_map = {'SST_Prototype_Epoch_19_mask_magface_discface.pt': 'geo-mask_magface_
         #    , 'SST_Prototype_Epoch_19_nonmask_mask_focal_loss_20210803.pt': 'geo-nonmask_mask_focal_loss_20210803'
            , 'SST_Prototype_Epoch_29_ir100.pt': 'geo-nonmask_mask_ir100'
         #    , 'magface_epoch_00025_transfer.pt': 'magface'
-           , 'FR_panel': 'FR_panel', 'FR_panel_geo001': 'FR_panel_geo001'}
+           , 'FR_panel': 'FR_panel', 'FR_panel_geo001': 'FR_panel_geo001'
+           , 'prob_face_uc_masked.pt': 'adaface_MLS'}
 
 for file in log_files:
     if file.endswith('.csv'):

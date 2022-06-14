@@ -25,6 +25,26 @@ def pair_MLS_score(x1, x2, sigma_sq1=None, sigma_sq2=None, use_attention_only=Fa
     return -dist
 
 
+def MLS_score_matrix(x1, x2, sigma_sq1=None, sigma_sq2=None, use_attention_only=False):
+    x1, x2 = np.array(x1), np.array(x2)
+    sigma_sq1, sigma_sq2 = np.array(sigma_sq1), np.array(sigma_sq2)
+    mu1, mu2 = x1, x2
+    sigma_sq_mutual = np.expand_dims(sigma_sq1, 1) + np.expand_dims(sigma_sq2, 0)
+    cos_theta = np.matmul(mu1, mu2.T)
+
+    print("sigma_sq_mutual:", sigma_sq_mutual.shape)
+    print("cos_theta:", cos_theta.shape)
+
+    dist1 = 2*(1-cos_theta) / (1e-10 + sigma_sq_mutual)
+    dist2 = np.log(sigma_sq_mutual)
+
+    if use_attention_only:
+        dist = dist1
+    else:
+        dist = dist1 + dist2
+    return -dist
+
+
 # reference by https://blog.csdn.net/SoftPoeter/article/details/86629329
 def partition_arg_topK(matrix, K, axis=0):
     """
