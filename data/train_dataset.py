@@ -27,13 +27,14 @@ from face_masker import FaceMasker
 class ImageDataset(Dataset):
     def __init__(self, data_root, data_list_path
                  , img_size=112, mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]
-                 , sample_size=1, data_aug=False, masked_ratio=0.5, device=None, prnet_model=None):
+                 , sample_size=1, data_aug=False, data_aug_ratio=0.5, masked_ratio=0.5, device=None, prnet_model=None):
         self.data_root = data_root
         self.img_size = img_size
         self.mean = mean
         self.std = std
         self.sample_size = sample_size
         self.data_aug = data_aug
+        self.data_aug_ratio = data_aug_ratio
 
         self.detector = dlib.get_frontal_face_detector()
         dlib_model_path = os.path.join(abs_path, 'ProbFace_pytorch'
@@ -115,11 +116,12 @@ class ImageDataset(Dataset):
             img = face_masker.add_mask_from_img(img.copy(), landmarks, template_name, is_68_landmarks=True)
 
         image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        image_transform = self.transform(image)
-        if self.data_aug:
+
+        if self.data_aug and random.random() > (1.0 - self.data_aug_ratio):
             blur_image_transform = self.blur_transform(image)
-            return image_transform, blur_image_transform
+            return blur_image_transform
         else:
+            image_transform = self.transform(image)
             return image_transform
 
     def sample_list(self, file_list):
@@ -164,13 +166,8 @@ class ImageDataset(Dataset):
                     shape = self.predictor(img, dets[0])
                     landmarks = self.shape_to_np(shape, dtype='float')
 
-            if self.data_aug:
-                image, image_blur = self.to_Tensor(image_path, face_masker, landmarks, template_name)
-                image_list.append(image)
-                image_list.append(image_blur)
-            else:
-                image = self.to_Tensor(image_path, face_masker, landmarks, template_name)
-                image_list.append(image)
+            image = self.to_Tensor(image_path, face_masker, landmarks, template_name)
+            image_list.append(image)
 
         image_list = torch.stack(image_list)
 
@@ -200,9 +197,11 @@ if __name__ == '__main__':
     prnet.load_state_dict(state_dict)
     prnet.eval()
 
+    sample_size = 16
+    data_aug = True
     id_loader = DataLoader(
         ImageDataset(data_root, data_list_path
-                     , sample_size=16, data_aug=False, masked_ratio=1.0
+                     , sample_size=sample_size, data_aug=data_aug, masked_ratio=1.0
                      , device=device, prnet_model=prnet),
         batch_size, shuffle=True, num_workers=0, drop_last=True)
 
@@ -211,8 +210,8 @@ if __name__ == '__main__':
     for batch_idx in range(10):
         data_time = time.time()
         images, labels = next(batch_iter)
-        sample = images[0][0]
         print(images.size())
         print(labels.size())
         print("data_time:", time.time() - data_time)
-        plt.imsave('sample_images{}.png'.format(batch_idx), (sample.cpu().numpy().transpose(1, 2, 0) + 1) / 2)
+        for si, sample in enumerate(images[0]):
+            plt.imsave('sample_images{}.png'.format(batch_idx * sample_size + si), (sample.cpu().numpy().transpose(1, 2, 0) + 1) / 2)

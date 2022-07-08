@@ -132,7 +132,7 @@ def train_one_epoch(data_loader
         labels = labels.to(device)
         batch_size, sample_size, ch, h, w = images.size()
         batch_sample_size = batch_size * sample_size
-        shuffle_ids = torch.randperm(batch_size).long().to(device)
+        shuffle_ids = torch.randperm(batch_sample_size).long().to(device)
         images = images.view(-1, ch, h, w)[shuffle_ids]
         labels = labels.view(-1)[shuffle_ids]
 
