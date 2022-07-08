@@ -9,6 +9,7 @@ import logging as logger
 import random
 import numpy as np
 from contextlib import contextmanager
+from functools import partial
 import sys
 sys.path.append("face_mask_adding/FMA-3D")
 
@@ -79,6 +80,14 @@ def init_seeds(seed=0):
     random.seed(seed)
     np.random.seed(seed)
     init_torch_seeds(seed)
+
+
+def worker_init_fn(worker_id, num_workers, rank, seed):
+    # The seed of each worker equals to
+    # num_worker * rank + worker_id + user_seed
+    worker_seed = num_workers * rank + worker_id + seed
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 
 
 def decay_lr(optimizer, scale=0.1):
@@ -204,6 +213,7 @@ def train_one_epoch(data_loader
             }
             torch.save(state, os.path.join(args.out_dir, saved_name))
             logger.info('Save checkpoint %s to disk.' % saved_name)
+            del state
 
     if args.local_rank in [-1, 0]:
         saved_name = 'Epoch_%d.pt' % cur_epoch
@@ -213,6 +223,9 @@ def train_one_epoch(data_loader
                  'optimizer': optimizer.state_dict()}
         torch.save(state, os.path.join(args.out_dir, saved_name))
         logger.info('Save checkpoint %s to disk...' % saved_name)
+        del state
+
+    torch.cuda.empty_cache()
 
 
 def train(args):
@@ -238,6 +251,7 @@ def train(args):
 
     cuda = device.type != 'cpu'
     init_seeds(2 + args.local_rank)
+    init_fn = partial(worker_init_fn, num_workers=args.workers, rank=args.local_rank, seed=2)
 
     model = load_backbone_pretrained_model(args.backbone_type)
     model = model.to(device)
@@ -304,7 +318,8 @@ def train(args):
                               sampler=train_sampler,
                               num_workers=args.workers,
                               pin_memory=True,
-                              drop_last=True)
+                              drop_last=True,
+                              worker_init_fn=init_fn)
 
     for epoch in range(ori_epoch, args.epoches):
         train_one_epoch(train_loader
