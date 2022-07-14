@@ -250,8 +250,8 @@ def train(args):
         args.batch_size = args.batch_size // args.world_size
 
     cuda = device.type != 'cpu'
-    init_seeds(2 + args.local_rank)
-    init_fn = partial(worker_init_fn, num_workers=args.workers, rank=args.local_rank, seed=2)
+    init_seeds(args.seed + args.local_rank)
+    init_fn = partial(worker_init_fn, num_workers=args.workers, rank=args.local_rank, seed=args.seed)
 
     model = load_backbone_pretrained_model(args.backbone_type)
     model = model.to(device)
@@ -351,6 +351,8 @@ if __name__ == '__main__':
                       help='The training epoches.')
     conf.add_argument('--step', type=str, default='2,5,7',
                       help='Step for lr.')
+    conf.add_argument('--seed', type=int, default=1685,
+                      help='The training epoches.')
     conf.add_argument('--workers', type=int, default=4)
     conf.add_argument('--print_freq', type=int, default=10,
                       help='The print frequency for training state.')
