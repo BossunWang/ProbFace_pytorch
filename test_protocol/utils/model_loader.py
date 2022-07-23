@@ -5,9 +5,11 @@
 """
 
 import torch
+import os
 import sys
 
-sys.path.append("../../")
+abs_path = os.getcwd().split('ProbFace_pytorch')[0]
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch'))
 from model import backbone
 from model.backbone import IR_101
 from model.uncertainty_head import UncertaintyHead

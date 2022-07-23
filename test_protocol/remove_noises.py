@@ -131,6 +131,8 @@ if __name__ == '__main__':
     parser.add_argument('--masked_facescrub_feature_outdir', type=str, default='')
     parser.add_argument('--model_path', type = str, default = 'mv_epoch_8.pt',
                       help = 'The path of model')
+    parser.add_argument('--cleaned_feature_dir', type=str, default='feats_cleaned',
+                        help='The path of output')
 
     args = parser.parse_args()
     with open(args.data_conf_file) as f:
@@ -139,7 +141,7 @@ if __name__ == '__main__':
         megaface_noises_file = data_conf['megaface_noises_file']
         megaface_mask = data_conf['megaface-mask']
 
-    cleaned_feature_dir = 'feats_cleaned'
+    cleaned_feature_dir = args.cleaned_feature_dir
     if not os.path.isdir(cleaned_feature_dir):
         os.mkdir(cleaned_feature_dir)
 

@@ -12,25 +12,26 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from utils.model_loader import ModelLoader
 from utils.extractor.feature_extractor import CommonExtractor
-sys.path.append('..')
-from data_processor.test_dataset import TestDatasetMegaFace
-from backbone.backbone_def import BackboneFactory
+abs_path = os.getcwd().split('ProbFace_pytorch')[0]
+sys.path.append(os.path.join(abs_path, 'ProbFace_pytorch'))
+from data.test_dataset import TestDatasetMegaFace
 
 if __name__ == '__main__':
     conf = argparse.ArgumentParser(description='extract features for megaface.')
-    conf.add_argument("--data_conf_file", type = str, 
-                      help = "The path of data_conf.yaml.")
-    conf.add_argument("--backbone_type", type = str, 
-                      help = "Resnet, Mobilefacenets.")
+    conf.add_argument("--data_conf_file", type=str,
+                      help="The path of data_conf.yaml.")
+    conf.add_argument("--backbone_type", type=str,
+                      help="Resnet, Mobilefacenets.")
     conf.add_argument("--backbone_conf_file", type = str, 
-                      help = "The path of backbone_conf.yaml.")
-    conf.add_argument('--batch_size', type = int, default = 1024)
-    conf.add_argument('--model_path', type = str, default = 'mv_epoch_8.pt', 
-                      help = 'The path of model')
-    conf.add_argument('--feats_root', type = str, default = 'mv_epoch_8.pt', 
-                      help = 'The path for feature save.')
+                      help="The path of backbone_conf.yaml.")
+    conf.add_argument('--batch_size', type=int, default=1024)
+    conf.add_argument('--model_path', type=str, default='mv_epoch_8.pt',
+                      help='The path of model')
+    conf.add_argument('--feats_root', type=str, default='mv_epoch_8.pt',
+                      help='The path for feature save.')
     conf.add_argument('--mean', type=float, default=127.5)
-    conf.add_argument('--std', type=float, default=128)
+    conf.add_argument('--std', type=float, default=127.5)
+    conf.add_argument("--load_backbone_only", action='store_true', default=False)
     args = conf.parse_args()
     with open(args.data_conf_file) as f:
         data_conf = yaml.load(f, Loader=yaml.FullLoader)['MegaFace']
@@ -46,10 +47,7 @@ if __name__ == '__main__':
     
     # define model.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    backbone_factory = BackboneFactory(args.backbone_type, args.backbone_conf_file)
-    uncertainty_backbone_factory = BackboneFactory('UncertaintyHead', args.backbone_conf_file)
-    eum_backbone_factory = BackboneFactory('EmbeddingUnmaskingModel', args.backbone_conf_file)
-    model_loader = ModelLoader(backbone_factory, uncertainty_backbone_factory, eum_backbone_factory, device)
+    model_loader = ModelLoader(args.backbone_type, device)
 
     feature_extractor = CommonExtractor(device)
 
@@ -62,7 +60,7 @@ if __name__ == '__main__':
             if model_name.endswith('.pt'):
                 print('test %s' % model_name)
                 model_path = os.path.join(args.model_path, model_name)
-                model = model_loader.load_model(model_path)
+                model = model_loader.load_model(model_path, args.load_backbone_only)
 
                 method_name = os.path.basename(model_path)
                 facescrub_save_dir = os.path.join(args.feats_root, 'facescrub', model_name)

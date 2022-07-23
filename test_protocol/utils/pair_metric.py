@@ -32,8 +32,8 @@ def MLS_score_matrix(x1, x2, sigma_sq1=None, sigma_sq2=None, use_attention_only=
     sigma_sq_mutual = np.expand_dims(sigma_sq1, 1) + np.expand_dims(sigma_sq2, 0)
     cos_theta = np.matmul(mu1, mu2.T)
 
-    print("sigma_sq_mutual:", sigma_sq_mutual.shape)
-    print("cos_theta:", cos_theta.shape)
+    # print("sigma_sq_mutual:", sigma_sq_mutual.shape)
+    # print("cos_theta:", cos_theta.shape)
 
     dist1 = 2*(1-cos_theta) / (1e-10 + sigma_sq_mutual)
     dist2 = np.log(sigma_sq_mutual)

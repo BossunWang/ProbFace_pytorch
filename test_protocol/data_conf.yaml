@@ -51,8 +51,8 @@ NIST_SD32_MEDS_II:
 MegaFace:
     facescrub_list: ../data/files/facescrub_features_list.json
     megaceface_list: ../data/files/megaface_features_list.json_1000000_1
-    facescrub_noises_file: ../../face_dataset/MegaFace/facescrub_noises.txt
-    megaface_noises_file: ../../face_dataset/MegaFace/megaface_noises.txt
+    facescrub_noises_file: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/facescrub_noises.txt
+    megaface_noises_file: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/megaface_noises.txt
     croped_facescrub_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/face_crop_arcface/facescrub_crop
     croped_megaface_folder: /media/glory/Transcend/Dataset/Face_Recognition_Dataset/MegaFace/face_crop_arcface/megaface_crop
     megaface-mask: 1
