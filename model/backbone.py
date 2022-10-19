@@ -15,6 +15,8 @@ import os
 def build_model(model_name='ir_50'):
     if model_name == 'ir_101':
         return IR_101(input_size=(112, 112))
+    elif model_name == 'ir_101_v2':
+        return ir_101_v2(input_size=(112, 112))
     elif model_name == 'ir_50':
         return IR_50(input_size=(112, 112))
     elif model_name == 'ir_se_50':
@@ -349,6 +351,84 @@ class Backbone(Module):
         return output, feature_fusion
 
 
+class BackboneV2(Module):
+    def __init__(self, input_size, num_layers, mode='ir'):
+        """ Args:
+            input_size: input_size of backbone
+            num_layers: num_layers of backbone
+            mode: support ir or irse
+        """
+        super(BackboneV2, self).__init__()
+        assert input_size[0] in [112, 224], \
+            "input_size should be [112, 112] or [224, 224]"
+        assert num_layers in [18, 34, 50, 100, 152, 200], \
+            "num_layers should be 18, 34, 50, 100 or 152"
+        assert mode in ['ir', 'ir_se'], \
+            "mode should be ir or ir_se"
+        self.input_layer = Sequential(Conv2d(3, 64, (3, 3), 1, 1, bias=False),
+                                      BatchNorm2d(64), PReLU(64))
+        blocks = get_blocks(num_layers)
+        if num_layers <= 100:
+            if mode == 'ir':
+                unit_module = BasicBlockIR
+            elif mode == 'ir_se':
+                unit_module = BasicBlockIRSE
+            output_channel = 512
+        else:
+            if mode == 'ir':
+                unit_module = BottleneckIR
+            elif mode == 'ir_se':
+                unit_module = BottleneckIRSE
+            output_channel = 2048
+
+        if input_size[0] == 112:
+            self.output_layer = Sequential(BatchNorm2d(output_channel),
+                                           Dropout(0.4),
+                                           Flatten(),
+                                           Linear(output_channel * 7 * 7, 512),
+                                           BatchNorm1d(512, affine=False))
+        else:
+            self.output_layer = Sequential(
+                BatchNorm2d(output_channel),
+                Dropout(0.4),
+                Flatten(),
+                Linear(output_channel * 14 * 14, 512),
+                BatchNorm1d(512, affine=False))
+
+        modules = []
+        for block in blocks:
+            for bottleneck in block:
+                modules.append(
+                    unit_module(bottleneck.in_channel, bottleneck.depth,
+                                bottleneck.stride))
+        self.body = Sequential(*modules)
+
+        initialize_weights(self.modules())
+
+    def forward(self, x):
+        # current code only supports one extra image
+        # it comes with a extra dimension for number of extra image. We will just squeeze it out for now
+        x = self.input_layer(x)
+
+        all_feature_list = []
+        for idx, module in enumerate(self.body):
+            all_feature_list.append(x)
+            x = module(x)
+
+        pool_index_list = [3, 16, 46]
+        feature_list = []
+        for idx in pool_index_list:
+            feature_pool = nn.AdaptiveAvgPool2d((7, 7))(all_feature_list[idx])
+            feature_list.append(feature_pool)
+
+        feature_list.append(x)
+        feature_fusion = torch.cat(feature_list, dim=1)
+        feature_fusion = torch.flatten(feature_fusion, start_dim=1)
+
+        output = self.output_layer(x)
+        return output, feature_fusion
+
+
 def IR_18(input_size):
     """ Constructs a ir-18 model.
     """
@@ -377,6 +457,14 @@ def IR_101(input_size):
     """ Constructs a ir-101 model.
     """
     model = Backbone(input_size, 100, 'ir')
+
+    return model
+
+
+def ir_101_v2(input_size):
+    """ Constructs a ir-50 model.
+    """
+    model = BackboneV2(input_size, 100, 'ir')
 
     return model
 
